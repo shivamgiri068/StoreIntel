@@ -154,3 +154,7 @@ data/videos/*
 *.pt
 yolov8*.pt
 .env
+
+# PDF files
+*.pdf
+docs/*.pdf

@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  vision-service:
+    build: ./vision-service
+    container_name: store-intel-vision-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_PATH=/app/data/store_intelligence.db
+      - VIDEO_DIR=/app/data/videos
+      - EVENTS_JSON_PATH=/app/data/events.json
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dashboard:
+    build: ./dashboard
+    container_name: store-intel-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - VISION_HOST=vision-service
+    depends_on:
+      vision-service:
+        condition: service_healthy
